@@ -2,13 +2,13 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
+  FaTimes, 
   FaWeixin, 
   FaQq, 
   FaWeibo, 
-  FaCopy, 
-  FaTimes,
-  FaLink,
-  FaQrcode
+  FaQrcode,
+  FaCopy,
+
 } from 'react-icons/fa';
 import { MusicInfo } from '../types/music';
 
@@ -102,7 +102,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, music }) => {
             {/* 音乐信息 */}
             <div className="flex items-center mb-6 p-4 bg-gradient-to-r from-primary/10 to-accent/10 rounded-2xl">
               <img
-                src={music.cover}
+                src={music.coverUrl}
                 alt={music.title}
                 className="w-16 h-16 rounded-lg object-cover mr-4"
               />

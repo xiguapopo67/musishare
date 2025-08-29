@@ -1,17 +1,25 @@
-// 音乐信息接口
+// 音乐相关类型定义
+
+export interface LyricsLine {
+  time: number;
+  text: string;
+}
+
 export interface MusicInfo {
   id: string;
   title: string;
   artist: string;
   album: string;
-  cover: string;
+  coverUrl: string;
+  audioUrl: string;
   duration: number;
-  url: string;
-  lyrics?: string[];
-  tags?: string[];
-  playCount?: number;
-  likeCount?: number;
-  shareCount?: number;
+  lyrics: string[] | LyricsLine[];
+  playCount: number;
+  likeCount: number;
+  shareCount: number;
+  commentCount: number;
+  tags: string[];
+  releaseDate: string;
 }
 
 // 播放状态

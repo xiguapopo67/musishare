@@ -9,6 +9,7 @@ export interface AppLaunchConfig {
   appName: string;
   appIcon?: string;
   description?: string;
+  [key: string]: string | undefined; // 添加索引签名
 }
 
 // Melon音乐APP配置
@@ -64,7 +65,7 @@ export const DEFAULT_APP_CONFIG = MELON_APP_CONFIG;
 
 // 获取APP配置的辅助函数
 export const getAppConfig = (appName: string): AppLaunchConfig => {
-  const configs = {
+  const configs: { [key: string]: AppLaunchConfig } = {
     'melon': MELON_APP_CONFIG,
     'kugou': KUGOU_APP_CONFIG,
     'netease': NETEASE_APP_CONFIG,
@@ -86,6 +87,6 @@ export const validateAppConfig = (config: AppLaunchConfig): boolean => {
   ];
   
   return requiredFields.every(field => 
-    config[field] && typeof config[field] === 'string' && config[field].length > 0
+    config[field] && typeof config[field] === 'string' && (config[field] as string).length > 0
   );
 };

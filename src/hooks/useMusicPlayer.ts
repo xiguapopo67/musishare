@@ -1,178 +1,173 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
+// @ts-ignore
 import { Howl } from 'howler';
-import { MusicInfo, PlayState } from '../types/music';
+import { MusicInfo } from '../types/music';
 
-export const useMusicPlayer = () => {
-  const [currentMusic, setCurrentMusic] = useState<MusicInfo | null>(null);
+export interface PlayState {
+  isPlaying: boolean;
+  currentTime: number;
+  duration: number;
+  volume: number;
+  isLoop: boolean;
+  isMuted: boolean;
+}
+
+export interface MusicPlayerControls {
+  play: () => void;
+  pause: () => void;
+  seek: (time: number) => void;
+  setVolume: (volume: number) => void;
+  toggleMute: () => void;
+  toggleLoop: () => void;
+  formatTime: (time: number) => string;
+}
+
+export const useMusicPlayer = (music?: MusicInfo) => {
   const [playState, setPlayState] = useState<PlayState>({
     isPlaying: false,
     currentTime: 0,
     duration: 0,
     volume: 1,
-    isMuted: false,
     isLoop: false,
-    isShuffle: false,
+    isMuted: false
   });
 
   const soundRef = useRef<Howl | null>(null);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<number | null>(null);
 
-  // 加载音乐
-  const loadMusic = useCallback((music: MusicInfo) => {
-    // 停止当前播放的音乐
-    if (soundRef.current) {
-      soundRef.current.stop();
-      soundRef.current.unload();
-    }
+  // 初始化音频
+  useEffect(() => {
+    if (music?.audioUrl) {
+      // 停止当前播放的音频
+      if (soundRef.current) {
+        soundRef.current.stop();
+      }
 
-    // 创建新的Howl实例
-    soundRef.current = new Howl({
-      src: [music.url],
-      html5: true,
-      volume: playState.volume,
-      onload: () => {
-        setPlayState(prev => ({
-          ...prev,
-          duration: soundRef.current?.duration() || 0,
-        }));
-      },
-      onplay: () => {
-        setPlayState(prev => ({ ...prev, isPlaying: true }));
-        startProgressTracking();
-      },
-      onpause: () => {
-        setPlayState(prev => ({ ...prev, isPlaying: false }));
-        stopProgressTracking();
-      },
-      onstop: () => {
-        setPlayState(prev => ({ 
-          ...prev, 
-          isPlaying: false, 
-          currentTime: 0 
-        }));
-        stopProgressTracking();
-      },
-      onend: () => {
-        if (playState.isLoop) {
-          soundRef.current?.play();
-        } else {
+      // 创建新的音频实例
+      soundRef.current = new Howl({
+        src: [music.audioUrl],
+        html5: true,
+        volume: playState.volume,
+        loop: playState.isLoop,
+        onload: () => {
+          setPlayState(prev => ({
+            ...prev,
+            duration: soundRef.current?.duration() || 0
+          }));
+        },
+        onplay: () => {
+          setPlayState(prev => ({ ...prev, isPlaying: true }));
+          startProgressTracking();
+        },
+        onpause: () => {
+          setPlayState(prev => ({ ...prev, isPlaying: false }));
+          stopProgressTracking();
+        },
+        onstop: () => {
           setPlayState(prev => ({ 
             ...prev, 
             isPlaying: false, 
             currentTime: 0 
           }));
+          stopProgressTracking();
+        },
+        onend: () => {
+          setPlayState(prev => ({ ...prev, isPlaying: false }));
+          stopProgressTracking();
         }
-        stopProgressTracking();
-      },
-    });
+      });
+    }
 
-    setCurrentMusic(music);
-  }, [playState.volume, playState.isLoop]);
+    return () => {
+      if (soundRef.current) {
+        soundRef.current.stop();
+      }
+      stopProgressTracking();
+    };
+  }, [music?.audioUrl]);
 
-  // 播放/暂停
-  const togglePlay = useCallback(() => {
-    if (!soundRef.current) return;
+  // 开始进度跟踪
+  const startProgressTracking = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+    
+    intervalRef.current = window.setInterval(() => {
+      if (soundRef.current && playState.isPlaying) {
+        setPlayState(prev => ({
+          ...prev,
+          currentTime: soundRef.current?.seek() || 0
+        }));
+      }
+    }, 100);
+  };
 
-    if (playState.isPlaying) {
-      soundRef.current.pause();
-    } else {
+  // 停止进度跟踪
+  const stopProgressTracking = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  };
+
+  // 播放控制
+  const play = () => {
+    if (soundRef.current) {
       soundRef.current.play();
     }
-  }, [playState.isPlaying]);
+  };
 
-  // 停止播放
-  const stop = useCallback(() => {
+  const pause = () => {
     if (soundRef.current) {
-      soundRef.current.stop();
+      soundRef.current.pause();
     }
-  }, []);
+  };
 
-  // 设置播放进度
-  const seek = useCallback((time: number) => {
+  const seek = (time: number) => {
     if (soundRef.current) {
       soundRef.current.seek(time);
       setPlayState(prev => ({ ...prev, currentTime: time }));
     }
-  }, []);
+  };
 
-  // 设置音量
-  const setVolume = useCallback((volume: number) => {
+  const setVolume = (volume: number) => {
     if (soundRef.current) {
       soundRef.current.volume(volume);
       setPlayState(prev => ({ ...prev, volume }));
     }
-  }, []);
+  };
 
-  // 静音/取消静音
-  const toggleMute = useCallback(() => {
+  const toggleMute = () => {
     if (soundRef.current) {
       const newMuted = !playState.isMuted;
       soundRef.current.mute(newMuted);
       setPlayState(prev => ({ ...prev, isMuted: newMuted }));
     }
-  }, [playState.isMuted]);
+  };
 
-  // 切换循环播放
-  const toggleLoop = useCallback(() => {
+  const toggleLoop = () => {
     if (soundRef.current) {
       const newLoop = !playState.isLoop;
       soundRef.current.loop(newLoop);
       setPlayState(prev => ({ ...prev, isLoop: newLoop }));
     }
-  }, [playState.isLoop]);
-
-  // 开始进度跟踪
-  const startProgressTracking = useCallback(() => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-    }
-
-    intervalRef.current = setInterval(() => {
-      if (soundRef.current && playState.isPlaying) {
-        const currentTime = soundRef.current.seek() as number;
-        setPlayState(prev => ({ ...prev, currentTime }));
-      }
-    }, 100);
-  }, [playState.isPlaying]);
-
-  // 停止进度跟踪
-  const stopProgressTracking = useCallback(() => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-  }, []);
+  };
 
   // 格式化时间
-  const formatTime = useCallback((seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  }, []);
-
-  // 清理资源
-  useEffect(() => {
-    return () => {
-      if (soundRef.current) {
-        soundRef.current.stop();
-        soundRef.current.unload();
-      }
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, []);
+  const formatTime = (time: number): string => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
 
   return {
-    currentMusic,
     playState,
-    loadMusic,
-    togglePlay,
-    stop,
+    play,
+    pause,
     seek,
     setVolume,
     toggleMute,
     toggleLoop,
-    formatTime,
+    formatTime
   };
 };

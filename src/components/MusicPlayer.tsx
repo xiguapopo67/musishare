@@ -36,22 +36,19 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
 }) => {
   const {
     playState,
-    loadMusic,
-    togglePlay,
+    play,
+    pause,
     seek,
     setVolume,
-    toggleMute,
+
     toggleLoop,
     formatTime
-  } = useMusicPlayer();
+  } = useMusicPlayer(music);
 
   const [showVolume, setShowVolume] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
 
-  // 加载音乐
-  React.useEffect(() => {
-    loadMusic(music);
-  }, [music, loadMusic]);
+
 
   // 处理进度条点击
   const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -94,7 +91,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
           }}
         >
           <img
-            src={music.cover}
+            src={music.coverUrl}
             alt={music.title}
             className="w-full h-full object-cover"
           />
@@ -155,7 +152,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
         </button>
 
         <motion.button
-          onClick={togglePlay}
+                      onClick={playState.isPlaying ? pause : play}
           className="p-4 rounded-full bg-primary hover:bg-primary/80 transition-colors shadow-lg"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}

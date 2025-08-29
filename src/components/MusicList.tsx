@@ -54,7 +54,7 @@ const MusicList: React.FC<MusicListProps> = ({
                 {/* 专辑封面 */}
                 <div className="relative mr-3">
                   <img
-                    src={music.cover}
+                    src={music.coverUrl}
                     alt={music.title}
                     className="w-12 h-12 rounded-lg object-cover"
                   />

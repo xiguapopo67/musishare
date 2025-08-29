@@ -1,81 +1,14 @@
 // 主应用组件 - 音乐分享页面
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FaMusic, FaHeart, FaShare, FaEye, FaComments, FaList, FaPlay, FaDownload } from 'react-icons/fa';
-import MusicPlayer from './components/MusicPlayer';
+import { useState } from 'react';
+import { FaPlay } from 'react-icons/fa';
 import ShareModal from './components/ShareModal';
-import LyricsDisplay from './components/LyricsDisplay';
-import MusicList from './components/MusicList';
-import SearchBar from './components/SearchBar';
-import { mockMusicList, getRandomMusic } from './data/mockData';
+import { getRandomMusic } from './data/mockData';
 import { MusicInfo } from './types/music';
 import { openApp, melonAppConfig } from './utils/appLauncher';
 
 function App() {
-  const [currentMusic, setCurrentMusic] = useState<MusicInfo>(getRandomMusic());
+  const [currentMusic] = useState<MusicInfo>(getRandomMusic());
   const [showShareModal, setShowShareModal] = useState(false);
-  const [showLyrics, setShowLyrics] = useState(false);
-  const [showMusicList, setShowMusicList] = useState(false);
-  const [currentMusicIndex, setCurrentMusicIndex] = useState(0);
-  const [isLiked, setIsLiked] = useState(false);
-  const [searchResults, setSearchResults] = useState<MusicInfo[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
-
-  // 播放下一首
-  const handleNext = () => {
-    const nextIndex = (currentMusicIndex + 1) % mockMusicList.length;
-    setCurrentMusicIndex(nextIndex);
-    setCurrentMusic(mockMusicList[nextIndex]);
-  };
-
-  // 播放上一首
-  const handlePrev = () => {
-    const prevIndex = currentMusicIndex === 0 ? mockMusicList.length - 1 : currentMusicIndex - 1;
-    setCurrentMusicIndex(prevIndex);
-    setCurrentMusic(mockMusicList[prevIndex]);
-  };
-
-  // 处理喜欢
-  const handleLike = () => {
-    setIsLiked(!isLiked);
-    // 这里可以添加API调用
-    console.log(`${isLiked ? '取消喜欢' : '喜欢'}音乐: ${currentMusic.title}`);
-  };
-
-  // 处理分享
-  const handleShare = () => {
-    setShowShareModal(true);
-  };
-
-  // 处理显示播放列表
-  const handleShowPlaylist = () => {
-    setShowMusicList(!showMusicList);
-  };
-
-  // 处理选择音乐
-  const handleSelectMusic = (music: MusicInfo) => {
-    const index = mockMusicList.findIndex(m => m.id === music.id);
-    setCurrentMusicIndex(index);
-    setCurrentMusic(music);
-    setShowMusicList(false);
-  };
-
-  // 处理显示歌词
-  const handleToggleLyrics = () => {
-    setShowLyrics(!showLyrics);
-  };
-
-  // 处理搜索
-  const handleSearch = (results: MusicInfo[]) => {
-    setSearchResults(results);
-    setIsSearching(true);
-  };
-
-  // 处理清除搜索
-  const handleClearSearch = () => {
-    setSearchResults([]);
-    setIsSearching(false);
-  };
 
   // 打开Melon APP
   const openMelonApp = () => {
@@ -131,18 +64,11 @@ function App() {
            <div className="bg-gray-900/50 rounded-lg p-4 max-h-48 overflow-y-auto custom-scrollbar">
              <p className="text-white text-sm leading-relaxed">
                {currentMusic.lyrics ? 
-                 (Array.isArray(currentMusic.lyrics) && typeof currentMusic.lyrics[0] === 'object' ? 
-                   currentMusic.lyrics.slice(0, 8).map((line: any, index) => (
-                     <span key={index} className="block mb-2">
-                       {line.text}
-                     </span>
-                   )).join('') :
-                   currentMusic.lyrics.slice(0, 8).map((line: string, index) => (
-                     <span key={index} className="block mb-2">
-                       {line}
-                     </span>
-                   )).join('')
-                 ) : '暂无歌词'}
+                 currentMusic.lyrics.slice(0, 8).map((line: any, index) => (
+                   <span key={index} className="block mb-2">
+                     {typeof line === 'string' ? line : line.text}
+                   </span>
+                 )) : '暂无歌词'}
              </p>
            </div>
          </div>

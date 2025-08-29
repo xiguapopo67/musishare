@@ -18,18 +18,7 @@ export const detectDevice = () => {
 export const openApp = (config: AppLaunchConfig) => {
   const device = detectDevice();
   
-  // 创建隐藏的iframe用于检测APP是否安装
-  const createHiddenIframe = (url: string) => {
-    const iframe = document.createElement('iframe');
-    iframe.style.display = 'none';
-    iframe.src = url;
-    document.body.appendChild(iframe);
-    
-    // 清理iframe
-    setTimeout(() => {
-      document.body.removeChild(iframe);
-    }, 1000);
-  };
+
 
   // 尝试打开APP
   const tryOpenApp = () => {
