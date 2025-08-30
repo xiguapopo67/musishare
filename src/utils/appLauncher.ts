@@ -10,15 +10,76 @@ export const detectDevice = () => {
   return {
     isIOS: /iPad|iPhone|iPod/.test(userAgent),
     isAndroid: /Android/.test(userAgent),
-    isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent)
+    isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent),
+    isWeChat: /MicroMessenger/i.test(userAgent),
+    isQQ: /QQ/i.test(userAgent),
+    isWeibo: /Weibo/i.test(userAgent)
   };
+};
+
+// 显示微信浏览器提示
+const showWeChatTip = (config: AppLaunchConfig) => {
+  const tipHtml = `
+    <div style="
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.8);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    ">
+      <div style="
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        text-align: center;
+        max-width: 300px;
+      ">
+        <div style="
+          width: 60px;
+          height: 60px;
+          background: #f0f0f0;
+          border-radius: 50%;
+          margin: 0 auto 16px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 24px;
+        ">🌐</div>
+        <h3 style="margin: 0 0 12px; font-size: 18px; color: #333;">请在浏览器中打开</h3>
+        <p style="margin: 0 0 20px; font-size: 14px; color: #666; line-height: 1.5;">
+          微信内置浏览器无法直接打开${config.appName}，请点击右上角菜单，选择"在浏览器中打开"
+        </p>
+        <button onclick="this.parentElement.parentElement.remove()" style="
+          background: #007AFF;
+          color: white;
+          border: none;
+          padding: 12px 24px;
+          border-radius: 8px;
+          font-size: 16px;
+          cursor: pointer;
+        ">我知道了</button>
+      </div>
+    </div>
+  `;
+  
+  document.body.insertAdjacentHTML('beforeend', tipHtml);
 };
 
 // 打开APP的主要函数
 export const openApp = (config: AppLaunchConfig) => {
   const device = detectDevice();
   
-
+  // 微信浏览器特殊处理
+  if (device.isWeChat) {
+    showWeChatTip(config);
+    return;
+  }
 
   // 尝试打开APP
   const tryOpenApp = () => {
