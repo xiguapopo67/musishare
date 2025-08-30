@@ -35,14 +35,14 @@ git push origin main
 
 ```json
 {
-  "homepage": "https://xiguapopo67.github.io/melon-music-share"
+  "homepage": "https://xiguapopo67.github.io/musishare"
 }
 ```
 
 ### 2. 确保仓库设置正确
 
 - 确保您的GitHub仓库是公开的（public）
-- 仓库名称应该是 `melon-music-share`
+- 仓库名称应该是 `musishare`
 
 ## 🚀 自动部署
 
@@ -88,7 +88,7 @@ npm run deploy
 部署完成后，您可以通过以下地址访问您的网站：
 
 ```
-https://xiguapopo67.github.io/melon-music-share
+https://xiguapopo67.github.io/musishare
 ```
 
 ---

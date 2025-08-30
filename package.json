@@ -1,9 +1,9 @@
 {
-  "name": "melon-music-share",
+  "name": "musishare",
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://xiguapopo67.github.io/melon-music-share",
+  "homepage": "https://xiguapopo67.github.io/musishare",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

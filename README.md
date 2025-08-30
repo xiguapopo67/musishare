@@ -13,7 +13,7 @@
 
 - 本地开发：`npm run dev`
 - 本地预览：`npm run preview`
-- GitHub Pages：https://xiguapopo67.github.io/melon-music-share
+- GitHub Pages：https://xiguapopo67.github.io/musishare
 
 ## 技术栈
 

@@ -8,7 +8,7 @@
 
 ```json
 {
-  "homepage": "https://your-actual-username.github.io/melon-music-share"
+  "homepage": "https://your-actual-username.github.io/musishare"
 }
 ```
 
@@ -51,7 +51,7 @@ git push origin main
 部署完成后，您可以通过以下地址访问您的网站：
 
 ```
-https://your-actual-username.github.io/melon-music-share
+https://your-actual-username.github.io/musishare
 ```
 
 ## 🔧 故障排除

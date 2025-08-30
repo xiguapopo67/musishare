@@ -86,7 +86,7 @@
 ## 📁 项目结构
 
 ```
-melon-music-share/
+musishare/
 ├── src/
 │   ├── components/          # 组件目录
 │   │   ├── MusicPlayer.tsx  # 音乐播放器
