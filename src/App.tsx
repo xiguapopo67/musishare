@@ -24,7 +24,7 @@ function App() {
         <div className="flex items-center justify-between">
                      <div className="flex items-center space-x-2">
              <img 
-               src="https://lanhu-oss-2537-2.lanhuapp.com/FigmaDDSSlicePNGbf8320784167787b044986e9de0bfda4.png"
+               src="public/images/logo.png"
                alt="Logo"
                className="w-8 h-8"
              />
