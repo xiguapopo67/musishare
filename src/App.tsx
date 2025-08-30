@@ -23,11 +23,11 @@ function App() {
       <div className="bg-white px-4 py-2">
         <div className="flex items-center justify-between">
                      <div className="flex items-center space-x-2">
-             <img 
-               src="/images/logos/logo.png"
-               alt="Logo"
-               className="w-8 h-8"
-             />
+                           <img 
+                src="/musishare/images/logos/logo.png"
+                alt="Logo"
+                className="w-8 h-8"
+              />
              <div className="flex flex-col">
                <span className="text-black font-semibold text-lg">Melon</span>
                <span className="text-gray-400 text-xs">MELON SLOGAN</span>

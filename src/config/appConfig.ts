@@ -20,7 +20,7 @@ export const MELON_APP_CONFIG: AppLaunchConfig = {
   androidPlayStoreUrl: 'https://play.google.com/store/apps/details?id=com.melon.app', // 需要替换为实际的Google Play链接
   webUrl: 'https://melon.app',
   appName: 'Melon',
-  appIcon: '/images/logos/logo.png',
+  appIcon: '/musishare/images/logos/logo.png',
   description: '发现好音乐，分享好心情'
 };
 
@@ -32,7 +32,7 @@ export const KUGOU_APP_CONFIG: AppLaunchConfig = {
   androidPlayStoreUrl: 'https://play.google.com/store/apps/details?id=com.kugou.android',
   webUrl: 'https://www.kugou.com',
   appName: '酷狗音乐',
-  appIcon: '/images/icons/kugou-icon.png',
+  appIcon: '/musishare/images/icons/kugou-icon.png',
   description: '音乐就是力量'
 };
 
@@ -44,7 +44,7 @@ export const NETEASE_APP_CONFIG: AppLaunchConfig = {
   androidPlayStoreUrl: 'https://play.google.com/store/apps/details?id=com.netease.cloudmusic',
   webUrl: 'https://music.163.com',
   appName: '网易云音乐',
-  appIcon: '/images/icons/netease-icon.png',
+  appIcon: '/musishare/images/icons/netease-icon.png',
   description: '音乐的力量'
 };
 
@@ -56,7 +56,7 @@ export const QQ_MUSIC_APP_CONFIG: AppLaunchConfig = {
   androidPlayStoreUrl: 'https://play.google.com/store/apps/details?id=com.tencent.qqmusic',
   webUrl: 'https://y.qq.com',
   appName: 'QQ音乐',
-  appIcon: '/images/icons/qqmusic-icon.png',
+  appIcon: '/musishare/images/icons/qqmusic-icon.png',
   description: '听我想听的歌'
 };
 
