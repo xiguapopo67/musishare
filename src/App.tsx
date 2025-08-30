@@ -24,7 +24,7 @@ function App() {
         <div className="flex items-center justify-between">
                      <div className="flex items-center space-x-2">
              <img 
-               src="public/images/logo.png"
+               src="/images/logos/logo.png"
                alt="Logo"
                className="w-8 h-8"
              />
