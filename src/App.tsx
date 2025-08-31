@@ -367,32 +367,35 @@ function App() {
         preload="metadata"
       />
 
-      {/* 导航栏 */}
-      <div className="bg-white px-4 py-2">
+      {/* 导航栏 - 移动端适配 */}
+      <div className="bg-white px-3 py-2 sm:px-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <img
               src="/musishare/images/logos/logo.png"
               alt="Logo"
-              className="w-8 h-8"
+              className="w-6 h-6 sm:w-8 sm:h-8"
             />
             <div className="flex flex-col">
-              <span className="text-black font-semibold text-lg">Melon</span>
+              <span className="text-black font-semibold text-base sm:text-lg">Melon</span>
               <span className="text-gray-400 text-xs">MELON SLOGAN</span>
             </div>
           </div>
-          <button className="bg-primary text-white px-4 py-1 rounded-lg text-sm" onClick={openMelonApp}>
+          <button
+            className="bg-primary text-white px-3 py-1 rounded-lg text-xs sm:text-sm sm:px-4"
+            onClick={openMelonApp}
+          >
             立即体验
           </button>
         </div>
       </div>
 
-      {/* 主要内容区域 */}
-      <div className="flex-1 flex flex-col items-center justify-center px-4 py-8">
+      {/* 主要内容区域 - 移动端适配 */}
+      <div className="flex-1 flex flex-col items-center justify-center px-3 py-4 sm:px-4 sm:py-8">
         {/* 专辑封面区域 */}
-        <div className="relative mb-8">
+        <div className="relative mb-6 sm:mb-8 mt-18 sm:mt-24">
           <div
-            className="w-40 h-40 bg-gradient-to-br from-gray-800 to-gray-900 rounded-full flex items-center justify-center relative overflow-hidden"
+            className="w-32 h-32 sm:w-40 sm:h-40 bg-gradient-to-br from-gray-800 to-gray-900 rounded-full flex items-center justify-center relative overflow-hidden"
             style={{
               backgroundImage: musicInfo.cover ? `url(${musicInfo.cover})` : 'none',
               backgroundSize: 'cover',
@@ -403,79 +406,79 @@ function App() {
             {/* 添加半透明遮罩层，确保播放按钮可见 */}
             <div className="absolute inset-0 bg-black/30 rounded-full"></div>
 
-            {/* 播放按钮 */}
+            {/* 播放按钮 - 移动端适配 */}
             <div className="relative z-10">
               <button
                 onClick={togglePlay}
-                className="w-12 h-12 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-black/70 transition-all duration-300"
+                className="w-10 h-10 sm:w-12 sm:h-12 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-black/70 active:bg-black/80 transition-all duration-300 touch-manipulation"
               >
                 {isPlaying ?
-                  <FaPause className="text-white text-lg" /> :
-                  <FaPlay className="text-white text-lg ml-1" />
+                  <FaPause className="text-white text-sm sm:text-lg" /> :
+                  <FaPlay className="text-white text-sm sm:text-lg ml-0.5 sm:ml-1" />
                 }
               </button>
             </div>
           </div>
         </div>
 
-        {/* 音乐信息 */}
-        <div className="text-center mb-8">
-          <h2 className="text-white text-xl font-bold mb-2">
+        {/* 音乐信息 - 移动端适配 */}
+        <div className="text-center mb-6 sm:mb-8 px-2">
+          <h2 className="text-white text-lg sm:text-xl font-bold mb-1 sm:mb-2 leading-tight">
             {musicInfo.title}
           </h2>
-          <p className="text-gray-400 text-sm">{musicInfo.genres?.join(',')}</p>
+          <p className="text-gray-400 text-xs sm:text-sm">{musicInfo.genres?.join(',')}</p>
         </div>
 
-        {/* 歌词轮播播放 */}
-        <div className="w-full h-full max-w-sm text-center mb-8">
+        {/* 歌词轮播播放 - 移动端适配 */}
+        <div className="w-full max-w-xs sm:max-w-sm text-center mb-6 sm:mb-8 px-2">
           <div
             ref={lyricsContainerRef}
-            className="rounded-lg p-4 max-h-48 overflow-y-auto custom-scrollbar"
+            className="rounded-lg p-3 sm:p-4 max-h-40 sm:max-h-48 overflow-y-auto custom-scrollbar"
             style={{
-              scrollBehavior: 'auto', // 禁用默认滚动行为，使用自定义动画
-              scrollbarWidth: 'none', // 隐藏滚动条
-              msOverflowStyle: 'none' // IE隐藏滚动条
+              scrollBehavior: 'auto',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none'
             }}
           >
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {/* 顶部空白区域 */}
-              <div className="h-24"></div>
+              <div className="h-16 sm:h-24"></div>
 
               {lyricArr.length > 0 ?
                 lyricArr.map((line, index) => (
                   <div
                     key={index}
                     ref={index === currentLyricIndex ? currentLyricRef : null}
-                    className={`transition-all duration-500 ease-in-out transform ${index === currentLyricIndex
-                      ? 'text-primary text-xl font-bold scale-110'
+                    className={`transition-all duration-500 ease-in-out transform px-2 ${index === currentLyricIndex
+                      ? 'text-primary text-lg sm:text-xl font-bold scale-105 sm:scale-110'
                       : index === currentLyricIndex - 1 || index === currentLyricIndex + 1
-                        ? 'text-gray-300 text-base'
-                        : 'text-gray-500 text-sm opacity-60'
+                        ? 'text-gray-300 text-sm sm:text-base'
+                        : 'text-gray-500 text-xs sm:text-sm opacity-60'
                       }`}
                     style={{
-                      transform: index === currentLyricIndex ? 'scale(1.1)' : 'scale(1)',
-                      filter: index === currentLyricIndex ? 'drop-shadow(0 0 8px rgba(255, 165, 0, 0.5))' : 'none'
+                      transform: index === currentLyricIndex ? 'scale(1.05)' : 'scale(1)',
+                      filter: index === currentLyricIndex ? 'drop-shadow(0 0 6px rgba(255, 165, 0, 0.4))' : 'none'
                     }}
                   >
                     {line.text}
                   </div>
                 )) : (
-                  <div className="text-gray-400 text-sm">暂无歌词</div>
+                  <div className="text-gray-400 text-xs sm:text-sm">暂无歌词</div>
                 )
               }
 
               {/* 底部空白区域 */}
-              <div className="h-24"></div>
+              <div className="h-16 sm:h-24"></div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 底部按钮区域 */}
-      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/80 to-transparent h-60 flex items-end justify-center pb-8">
-        <div className="flex space-x-4 w-full max-w-sm px-6">
+      {/* 底部按钮区域 - 移动端适配 */}
+      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/80 to-transparent h-48 sm:h-60 flex items-end justify-center pb-4 sm:pb-8">
+        <div className="flex space-x-3 sm:space-x-4 w-full max-w-xs sm:max-w-sm px-4 sm:px-6">
           <button
-            className="flex-1 bg-transparent border border-primary text-white py-3 rounded-xl font-medium text-base"
+            className="flex-1 bg-transparent border border-primary text-white py-2.5 sm:py-3 rounded-xl font-medium text-sm sm:text-base active:bg-white/10 transition-all duration-200 touch-manipulation"
             onClick={() => {
               console.log('下载APP');
             }}
@@ -483,7 +486,7 @@ function App() {
             Download APP
           </button>
           <button
-            className="flex-1 bg-primary text-black py-3 rounded-xl font-medium text-base"
+            className="flex-1 bg-primary text-black py-2.5 sm:py-3 rounded-xl font-medium text-sm sm:text-base active:bg-primary/90 transition-all duration-200 touch-manipulation"
             onClick={() => {
               openMelonApp();
             }}

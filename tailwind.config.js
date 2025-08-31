@@ -13,6 +13,10 @@ export default {
         dark: '#121212',
         light: '#f8f9fa'
       },
+      spacing: {
+        '18': '4.5rem', // 72px
+        '24': '6rem',   // 96px
+      },
       animation: {
         'spin-slow': 'spin 3s linear infinite',
         'pulse-slow': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',

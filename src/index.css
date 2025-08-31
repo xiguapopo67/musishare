@@ -19,6 +19,11 @@ body {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
   overflow-x: hidden;
+  /* 移动端优化 */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 /* 自定义滚动条 */
@@ -95,21 +100,51 @@ body {
   background-clip: text;
 }
 
-/* 自定义滚动条样式 */
+/* 隐藏滚动条样式 */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.custom-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 2px;
+  display: none;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 2px;
+  display: none;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.5);
+  display: none;
+}
+
+/* 移动端优化样式 */
+@media (max-width: 640px) {
+  /* 移动端触摸优化 */
+  button, [role="button"] {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* 移动端字体优化 */
+  .text-xs {
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+  
+  /* 移动端间距优化 */
+  .space-y-3 > * + * {
+    margin-top: 0.75rem;
+  }
+  
+  /* 移动端滚动优化 */
+  .custom-scrollbar {
+    -webkit-overflow-scrolling: touch;
+  }
 }
