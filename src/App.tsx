@@ -1,6 +1,6 @@
 // 主应用组件 - 音乐分享页面
 import { useState, useMemo, useEffect, useRef } from 'react';
-import { FaPlay, FaPause, FaVolumeUp } from 'react-icons/fa';
+import { FaPlay, FaPause } from 'react-icons/fa';
 import ShareModal from './components/ShareModal';
 import { getRandomMusic } from './data/mockData';
 import { MusicInfo } from './types/music';
@@ -38,9 +38,9 @@ function App() {
   // 音频播放相关状态
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
+
   const [currentLyricIndex, setCurrentLyricIndex] = useState(-1);
-  
+
   // 引用
   const audioRef = useRef<HTMLAudioElement>(null);
   const lyricsContainerRef = useRef<HTMLDivElement>(null);
@@ -53,19 +53,14 @@ function App() {
     return min * 60 + sec;
   };
 
-  // 格式化时间显示
-  const formatTime = (time: number) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-  };
+
 
   // 解析歌词数据
   const lyricArr = useMemo((): LyricLine[] => {
     if (!musicInfo.lyrics) return [];
-    
+
     let lyricsData: any[];
-    
+
     // 如果是字符串，尝试解析JSON
     if (typeof musicInfo.lyrics === 'string') {
       try {
@@ -77,7 +72,7 @@ function App() {
     } else {
       lyricsData = musicInfo.lyrics;
     }
-    
+
     // 确保是数组格式
     if (Array.isArray(lyricsData)) {
       return lyricsData
@@ -103,7 +98,7 @@ function App() {
         })
         .filter((item): item is LyricLine => item !== null);
     }
-    
+
     return [];
   }, [musicInfo.lyrics]);
 
@@ -111,7 +106,7 @@ function App() {
   const getMusicDataFromUrl = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const musicDataStr = urlParams.get('musicData');
-    
+
     if (musicDataStr) {
       try {
         return JSON.parse(musicDataStr);
@@ -142,9 +137,7 @@ function App() {
   };
 
   const handleLoadedMetadata = () => {
-    if (audioRef.current) {
-      setDuration(audioRef.current.duration);
-    }
+    // 音频元数据加载完成
   };
 
   const handleEnded = () => {
@@ -165,66 +158,64 @@ function App() {
     }
   };
 
- // 歌词滚动逻辑 - 轮播方式
- useEffect(() => {
-  if (lyricArr.length === 0) return;
+  // 歌词滚动逻辑 - 轮播方式
+  useEffect(() => {
+    if (lyricArr.length === 0) return;
 
-  // 找到当前应该高亮的歌词
-  let currentIndex = -1;
-  
-  // 如果时间还没到第一句歌词，不显示任何高亮
-  if (currentTime < lyricArr[0].startTime) {
-    currentIndex = -1;
-  } else {
-    // 找到当前时间对应的歌词
-    for (let i = 0; i < lyricArr.length; i++) {
-      const lyric = lyricArr[i];
-      const nextLyric = lyricArr[i + 1];
-      
-      if (nextLyric) {
-        // 如果当前时间在这个歌词的时间范围内
-        if (currentTime >= lyric.startTime && currentTime < nextLyric.startTime) {
-          currentIndex = i;
-          break;
-        }
-      } else {
-        // 最后一句歌词
-        if (currentTime >= lyric.startTime) {
-          currentIndex = i;
-          break;
+    // 找到当前应该高亮的歌词
+    let currentIndex = -1;
+
+    // 如果时间还没到第一句歌词，不显示任何高亮
+    if (currentTime < lyricArr[0].startTime) {
+      currentIndex = -1;
+    } else {
+      // 找到当前时间对应的歌词
+      for (let i = 0; i < lyricArr.length; i++) {
+        const lyric = lyricArr[i];
+        const nextLyric = lyricArr[i + 1];
+
+        if (nextLyric) {
+          // 如果当前时间在这个歌词的时间范围内
+          if (currentTime >= lyric.startTime && currentTime < nextLyric.startTime) {
+            currentIndex = i;
+            break;
+          }
+        } else {
+          // 最后一句歌词
+          if (currentTime >= lyric.startTime) {
+            currentIndex = i;
+            break;
+          }
         }
       }
     }
-  }
 
-  if (currentIndex !== currentLyricIndex) {
-    setCurrentLyricIndex(currentIndex);
-    
-    // 轮播方式滚动到当前歌词
-    if (currentIndex >= 0 && currentLyricRef.current && lyricsContainerRef.current) {
-      const container = lyricsContainerRef.current;
-      const currentElement = currentLyricRef.current;
-      
-      // 计算滚动位置 - 轮播效果
-      const containerHeight = container.clientHeight;
-      const elementTop = currentElement.offsetTop;
-      const elementHeight = currentElement.clientHeight;
-      
-      // 计算目标滚动位置，让当前歌词显示在容器中间
-            container.scrollTo({
-              top:  scrollHeight.current + elementHeight+10,
-              behavior: 'smooth'
-            });
-            scrollHeight.current = scrollHeight.current + elementHeight+10;
+    if (currentIndex !== currentLyricIndex) {
+      setCurrentLyricIndex(currentIndex);
+
+      // 轮播方式滚动到当前歌词
+      if (currentIndex >= 0 && currentLyricRef.current && lyricsContainerRef.current) {
+        const container = lyricsContainerRef.current;
+        const currentElement = currentLyricRef.current;
+
+        // 计算滚动位置 - 轮播效果
+        const elementHeight = currentElement.clientHeight;
+
+        // 计算目标滚动位置，让当前歌词显示在容器中间
+        container.scrollTo({
+          top: scrollHeight.current + elementHeight + 10,
+          behavior: 'smooth'
+        });
+        scrollHeight.current = scrollHeight.current + elementHeight + 10;
+      }
     }
-  }
-}, [currentTime, lyricArr, currentLyricIndex]);
+  }, [currentTime, lyricArr, currentLyricIndex]);
 
   // 初始化音乐数据
   useEffect(() => {
     const musicData = getMusicDataFromUrl();
     console.log('音乐数据:', musicData);
-    
+
     // 如果没有URL参数，使用默认的测试数据
     if (!musicData.url) {
       setMusicInfo({
@@ -365,7 +356,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-black relative overflow-hidden">  
+    <div className="min-h-screen bg-black relative overflow-hidden">
       {/* 音频播放器 */}
       <audio
         ref={audioRef}
@@ -380,7 +371,7 @@ function App() {
       <div className="bg-white px-4 py-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <img 
+            <img
               src="/musishare/images/logos/logo.png"
               alt="Logo"
               className="w-8 h-8"
@@ -400,7 +391,7 @@ function App() {
       <div className="flex-1 flex flex-col items-center justify-center px-4 py-8">
         {/* 专辑封面区域 */}
         <div className="relative mb-8">
-          <div 
+          <div
             className="w-40 h-40 bg-gradient-to-br from-gray-800 to-gray-900 rounded-full flex items-center justify-center relative overflow-hidden"
             style={{
               backgroundImage: musicInfo.cover ? `url(${musicInfo.cover})` : 'none',
@@ -411,15 +402,15 @@ function App() {
           >
             {/* 添加半透明遮罩层，确保播放按钮可见 */}
             <div className="absolute inset-0 bg-black/30 rounded-full"></div>
-            
+
             {/* 播放按钮 */}
             <div className="relative z-10">
               <button
                 onClick={togglePlay}
                 className="w-12 h-12 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-black/70 transition-all duration-300"
               >
-                {isPlaying ? 
-                  <FaPause className="text-white text-lg" /> : 
+                {isPlaying ?
+                  <FaPause className="text-white text-lg" /> :
                   <FaPlay className="text-white text-lg ml-1" />
                 }
               </button>
@@ -437,10 +428,10 @@ function App() {
 
         {/* 歌词轮播播放 */}
         <div className="w-full h-full max-w-sm text-center mb-8">
-          <div 
+          <div
             ref={lyricsContainerRef}
             className="rounded-lg p-4 max-h-48 overflow-y-auto custom-scrollbar"
-            style={{ 
+            style={{
               scrollBehavior: 'auto', // 禁用默认滚动行为，使用自定义动画
               scrollbarWidth: 'none', // 隐藏滚动条
               msOverflowStyle: 'none' // IE隐藏滚动条
@@ -449,19 +440,18 @@ function App() {
             <div className="space-y-4">
               {/* 顶部空白区域 */}
               <div className="h-24"></div>
-              
-              {lyricArr.length > 0 ? 
+
+              {lyricArr.length > 0 ?
                 lyricArr.map((line, index) => (
                   <div
                     key={index}
                     ref={index === currentLyricIndex ? currentLyricRef : null}
-                    className={`transition-all duration-500 ease-in-out transform ${
-                      index === currentLyricIndex 
-                        ? 'text-primary text-xl font-bold scale-110' 
-                        : index === currentLyricIndex - 1 || index === currentLyricIndex + 1
+                    className={`transition-all duration-500 ease-in-out transform ${index === currentLyricIndex
+                      ? 'text-primary text-xl font-bold scale-110'
+                      : index === currentLyricIndex - 1 || index === currentLyricIndex + 1
                         ? 'text-gray-300 text-base'
                         : 'text-gray-500 text-sm opacity-60'
-                    }`}
+                      }`}
                     style={{
                       transform: index === currentLyricIndex ? 'scale(1.1)' : 'scale(1)',
                       filter: index === currentLyricIndex ? 'drop-shadow(0 0 8px rgba(255, 165, 0, 0.5))' : 'none'
@@ -473,7 +463,7 @@ function App() {
                   <div className="text-gray-400 text-sm">暂无歌词</div>
                 )
               }
-              
+
               {/* 底部空白区域 */}
               <div className="h-24"></div>
             </div>
@@ -484,7 +474,7 @@ function App() {
       {/* 底部按钮区域 */}
       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/80 to-transparent h-60 flex items-end justify-center pb-8">
         <div className="flex space-x-4 w-full max-w-sm px-6">
-          <button 
+          <button
             className="flex-1 bg-transparent border border-primary text-white py-3 rounded-xl font-medium text-base"
             onClick={() => {
               console.log('下载APP');
@@ -492,7 +482,7 @@ function App() {
           >
             Download APP
           </button>
-          <button 
+          <button
             className="flex-1 bg-primary text-black py-3 rounded-xl font-medium text-base"
             onClick={() => {
               openMelonApp();
