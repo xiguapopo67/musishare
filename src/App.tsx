@@ -201,12 +201,42 @@ function App() {
         // 计算滚动位置 - 轮播效果
         const elementHeight = currentElement.clientHeight;
 
+        // 根据屏幕尺寸计算自适应偏移量
+        const getAdaptiveOffset = () => {
+          const screenWidth = window.innerWidth;
+          const screenHeight = window.innerHeight;
+
+          // 移动端（小屏幕）
+          if (screenWidth <= 640) {
+            // 根据屏幕高度调整偏移量
+            if (screenHeight <= 667) { // iPhone 6/7/8
+              return 8;
+            } else if (screenHeight <= 812) { // iPhone X/XS
+              return 10;
+            } else if (screenHeight <= 896) { // iPhone XR/XS Max
+              return 12;
+            } else { // 更大的屏幕
+              return 15;
+            }
+          }
+          // 平板
+          else if (screenWidth <= 1024) {
+            return 20;
+          }
+          // 桌面端
+          else {
+            return 25;
+          }
+        };
+
+        const adaptiveOffset = getAdaptiveOffset();
+
         // 计算目标滚动位置，让当前歌词显示在容器中间
         container.scrollTo({
-          top: scrollHeight.current + elementHeight + 10,
+          top: scrollHeight.current + elementHeight + adaptiveOffset,
           behavior: 'smooth'
         });
-        scrollHeight.current = scrollHeight.current + elementHeight + 10;
+        scrollHeight.current = scrollHeight.current + elementHeight + adaptiveOffset;
       }
     }
   }, [currentTime, lyricArr, currentLyricIndex]);
